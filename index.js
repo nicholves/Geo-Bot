@@ -221,7 +221,9 @@ function sendStats(username) {
         console.log(data);
         let json = JSON.parse(data);
 
-        let points, gamesPlayed, possiblePoints = 0;
+        let points = 0;
+        let gamesPlayed = 0;
+        let possiblePoints = 0;
 
         let pointsCat = {"flags":0, "capitals":0, "population":0};
 
