@@ -254,6 +254,11 @@ function sendStats(username) {
         let cats = {};
         for (let category in possiblePointsCat) {
             try {
+                //javascript is dumb for this
+                if (possiblePointsCat[category] == 0) {
+                    cats[category] = 0.0;
+                    continue;
+                }
                 cats[category] = pointsCat[category] / possiblePointsCat[category];
             } catch {
                 cats[category] = 0.0;
