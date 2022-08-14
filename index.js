@@ -23,7 +23,7 @@ var data;
 
 //const intents = new Discord.Intents(8);
 
-const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"]});
+const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES", "!stats"]});
 
 client.on("ready", function() {
     let xhttp = new XMLHttpRequest();
@@ -55,6 +55,10 @@ client.on("messageCreate", (message) => {
     console.log(`Message: "${message.content}" recieved from user: ${message.author.username} at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`);
 
 
+    if (!inGame && message.content == "!stats") {
+        sendStats(message.author.username);
+
+    }
     if (!inGame && gameTypes.includes(message.content)) {
         inGame = true;
         console.log("starting new game");
@@ -156,6 +160,7 @@ function endGame() {
             console.log();
           });
     });
+    currentGame = {};
 }
 
 function flagGameTurn() {
@@ -207,6 +212,74 @@ function populationGameTurn() {
             geoChannel.send(`${i}: ${possiblePopulation}`);
         }
     }
+}
+
+function sendStats(username) {
+    geoChannel.send("\`\`\`\`Stats for user " + ` ${username}:\`\`\`\``);
+
+
+    fs.readFile('Data.txt', 'utf8', function(err, data){
+        let json = JSON.parse(data);
+
+        let points, gamesPlayed, possiblePoints;
+
+        let pointsCat = {"flags":0, "capitals":0, "population":0};
+
+        let possiblePointsCat = {"flags":0, "capitals":0, "population":0};
+
+        for (let game of json) {
+            if (game.player !== username) {
+                continue;
+            }
+
+            points += game.score;
+            possiblePoints += game.turn;
+            gamesPlayed++;
+
+            pointsCat[game.type] += game.score;
+            possiblePointsCat[game.type] += game.score;
+        }
+
+        if (possiblePoints == 0) {
+            geoChannel.send("\tYou have not played any games and thus have no stats available");
+            return;
+        }
+
+        geoChannel.send(`\tTotal correct answers: ${points}`);
+        geoChannel.send(`\tOverall acuracy: ${parseInt(points / possiblePoints)}%`);
+        geoChannel.send(`\tGames played: ${gamesPlayed}`);
+
+        let cats = {};
+        for (let category in possiblePointsCat) {
+            try {
+                cats[category] = pointsCat[category] / possiblePointsCat[category];
+            } catch {
+                cats[category] = 0.0;
+            }
+        }
+
+        let best = 0;
+        let bestCat;
+        for (let category in cats){
+            if (cats[category] >= best) {
+                best = cats[category];
+                bestCat = category;
+            }
+        }
+
+        geoChannel.send(`\tBest category: ${bestCat}, average acurracy: ${parseInt(cats[bestCat])}%`);
+
+        let worst = 100;
+        let worstCat;
+        for (let category in cats){
+            if (cats[category] <= worst) {
+                worst = cats[category];
+                worstCat = category;
+            }
+        }
+
+        geoChannel.send(`\tWorst category: ${worstCat}, average acurracy: ${parseInt(cats[worstCat])}%`);
+    });
 }
 
 
