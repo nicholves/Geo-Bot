@@ -23,7 +23,7 @@ var data;
 
 //const intents = new Discord.Intents(8);
 
-const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES", "!stats"]});
+const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES", "DIRECT_MESSAGES"]});
 
 client.on("ready", function() {
     let xhttp = new XMLHttpRequest();
@@ -57,7 +57,6 @@ client.on("messageCreate", (message) => {
 
     if (!inGame && message.content == "!stats") {
         sendStats(message.author.username);
-
     }
     if (!inGame && gameTypes.includes(message.content)) {
         inGame = true;
