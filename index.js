@@ -214,13 +214,14 @@ function populationGameTurn() {
 }
 
 function sendStats(username) {
-    geoChannel.send("\`\`\`\`Stats for user " + ` ${username}:\`\`\`\``);
+    geoChannel.send("\`\`\`Stats for user " + ` ${username}:\`\`\``);
 
 
     fs.readFile('Data.json', 'utf8', function(err, data){
+        console.log(data);
         let json = JSON.parse(data);
 
-        let points, gamesPlayed, possiblePoints;
+        let points, gamesPlayed, possiblePoints = 0;
 
         let pointsCat = {"flags":0, "capitals":0, "population":0};
 
@@ -245,7 +246,7 @@ function sendStats(username) {
         }
 
         geoChannel.send(`\tTotal correct answers: ${points}`);
-        geoChannel.send(`\tOverall acuracy: ${parseInt(points / possiblePoints)}%`);
+        geoChannel.send(`\tOverall acuracy: ${parseInt(points / possiblePoints) * 100}%`);
         geoChannel.send(`\tGames played: ${gamesPlayed}`);
 
         let cats = {};
@@ -266,7 +267,7 @@ function sendStats(username) {
             }
         }
 
-        geoChannel.send(`\tBest category: ${bestCat}, average acurracy: ${parseInt(cats[bestCat])}%`);
+        geoChannel.send(`\tBest category: ${bestCat}, average acurracy: ${parseInt(cats[bestCat]  * 100)}%`);
 
         let worst = 100;
         let worstCat;
@@ -277,7 +278,7 @@ function sendStats(username) {
             }
         }
 
-        geoChannel.send(`\tWorst category: ${worstCat}, average acurracy: ${parseInt(cats[worstCat])}%`);
+        geoChannel.send(`\tWorst category: ${worstCat}, average acurracy: ${parseInt(cats[worstCat]  * 100)}%`);
     });
 }
 
