@@ -225,9 +225,9 @@ function sendStats(username) {
         let gamesPlayed = 0;
         let possiblePoints = 0;
 
-        let pointsCat = {"flags":0, "capitals":0, "population":0};
+        let pointsCat = {"flags":0.0, "capitals":0.0, "population":0.0};
 
-        let possiblePointsCat = {"flags":0, "capitals":0, "population":0};
+        let possiblePointsCat = {"flags":0.0, "capitals":0.0, "population":0.0};
 
         for (let game of json) {
             if (game.player !== username) {
@@ -239,7 +239,7 @@ function sendStats(username) {
             gamesPlayed++;
 
             pointsCat[game.type] += game.score;
-            possiblePointsCat[game.type] += game.score;
+            possiblePointsCat[game.type] += game.turn;
         }
 
         if (possiblePoints == 0) {
@@ -248,7 +248,7 @@ function sendStats(username) {
         }
 
         geoChannel.send(`\tTotal correct answers: ${points}`);
-        geoChannel.send(`\tOverall acuracy: ${parseInt(points / possiblePoints) * 100}%`);
+        geoChannel.send(`\tOverall acuracy: ${parseInt(points / possiblePoints * 100)}%`);
         geoChannel.send(`\tGames played: ${gamesPlayed}`);
 
         let cats = {};
