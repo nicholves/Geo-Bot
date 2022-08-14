@@ -217,7 +217,7 @@ function sendStats(username) {
     geoChannel.send("\`\`\`\`Stats for user " + ` ${username}:\`\`\`\``);
 
 
-    fs.readFile('Data.txt', 'utf8', function(err, data){
+    fs.readFile('Data.json', 'utf8', function(err, data){
         let json = JSON.parse(data);
 
         let points, gamesPlayed, possiblePoints;
